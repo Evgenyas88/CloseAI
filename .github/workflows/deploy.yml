@@ -1,0 +1,26 @@
+name: Deploy CloseAI Proxy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with: node-version: 18
+
+      - run: npm install -g pnpm
+      - run: pnpm install
+
+      - run: pnpm exec wrangler deploy
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+          CF_ROUTE: ${{ secrets.CF_ROUTE }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
